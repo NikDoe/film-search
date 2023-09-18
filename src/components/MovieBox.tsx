@@ -1,16 +1,14 @@
-import { FC } from "react";
-import { TempMovieDataType } from "../App";
+import { FC, ReactNode } from "react";
 import BoxContainer from "./BoxContainer";
-import List from "./MovieList";
 
 type MovieBoxProps = {
-    movies: TempMovieDataType[];
+    children: ReactNode;
 }
 
-const MovieBox: FC<MovieBoxProps> = function ({ movies }) {
+const MovieBox: FC<MovieBoxProps> = function ({ children }) {
 	return (
 		<BoxContainer>
-			<List movies={movies} />
+			{children}
 		</BoxContainer>
 	);
 };

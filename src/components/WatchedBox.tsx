@@ -1,18 +1,14 @@
-import { FC } from "react";
+import { FC, ReactNode } from "react";
 import BoxContainer from "./BoxContainer";
-import { TempWatchedDataType } from "../App";
-import WatchedSummary from "./WatchedSummary";
-import WatchedList from "./WatchedList";
 
 type WatchedBoxProps = {
-    watched: TempWatchedDataType[];
+    children: ReactNode;
 }
 
-const WatchedBox: FC<WatchedBoxProps> = function ({ watched }) {
+const WatchedBox: FC<WatchedBoxProps> = function ({ children }) {
 	return (
 		<BoxContainer>
-			<WatchedSummary watched={watched} />
-			<WatchedList watched={watched} />
+			{children}
 		</BoxContainer>
 	);
 };

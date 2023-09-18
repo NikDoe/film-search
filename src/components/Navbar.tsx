@@ -1,18 +1,15 @@
-import { FC } from "react";
+import { FC, ReactNode } from "react";
 import Logo from "./Logo";
-import Search from "./Search";
-import SearchResults from "./SearchResults";
 
 type NavbarProps = {
-	moviesLength: number;
+	children: ReactNode;
 }
 
-const Navbar: FC<NavbarProps> = function ({ moviesLength }) {
+const Navbar: FC<NavbarProps> = function ({ children }) {
 	return (
 		<nav className="nav-bar">
 			<Logo />
-			<Search />
-			<SearchResults moviesLength={moviesLength} />
+			{children}
 		</nav>
 	);
 };

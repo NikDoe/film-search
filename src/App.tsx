@@ -1,6 +1,13 @@
 import { useState } from "react";
 import Navbar from "./components/Navbar";
 import Main from "./components/Main";
+import Search from "./components/Search";
+import SearchResults from "./components/SearchResults";
+import MovieBox from "./components/MovieBox";
+import WatchedBox from "./components/WatchedBox";
+import MovieList from "./components/MovieList";
+import WatchedSummary from "./components/WatchedSummary";
+import WatchedList from "./components/WatchedList";
 
 const tempMovieData = [
 	{
@@ -22,7 +29,7 @@ const tempMovieData = [
 		Title: "Parasite",
 		Year: "2019",
 		Poster:
-      "https://m.media-amazon.com/images/M/MV5BYWZjMjk3ZTItODQ2ZC00NTY5LWE0ZDYtZTI3MjcwN2Q5NTVkXkEyXkFqcGdeQXVyODk4OTc3MTY@._V1_SX300.jpg",
+		"https://m.media-amazon.com/images/M/MV5BYWZjMjk3ZTItODQ2ZC00NTY5LWE0ZDYtZTI3MjcwN2Q5NTVkXkEyXkFqcGdeQXVyODk4OTc3MTY@._V1_SX300.jpg",
 	},
 ];
 
@@ -58,8 +65,19 @@ const App = function () {
 
 	return (
 		<>
-			<Navbar moviesLength={movies.length} />
-			<Main movies={movies} watched={watched} />
+			<Navbar>
+				<Search />
+				<SearchResults moviesLength={movies.length} />
+			</Navbar>
+			<Main>
+				<MovieBox>
+					<MovieList movies={movies} />
+				</MovieBox>
+				<WatchedBox>
+					<WatchedSummary watched={watched} />
+					<WatchedList watched={watched} />
+				</WatchedBox>
+			</Main>
 		</>
 	);
 };

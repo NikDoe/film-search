@@ -1,18 +1,13 @@
-import { FC } from "react";
-import MovieBox from "./MovieBox";
-import WatchedBox from "./WatchedBox";
-import { TempMovieDataType, TempWatchedDataType } from "../App";
+import { FC, ReactNode } from "react";
 
 type MainProps = {
-    movies: TempMovieDataType[];
-    watched: TempWatchedDataType[];
+	children: ReactNode;
 }
 
-const Main: FC<MainProps> = function ({ movies, watched }) {
+const Main: FC<MainProps> = function ({ children }) {
 	return (
 		<main className="main">
-			<MovieBox movies={movies} />
-			<WatchedBox watched={watched} />
+			{children}
 		</main>
 	);
 };
