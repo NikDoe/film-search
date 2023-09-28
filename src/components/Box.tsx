@@ -1,11 +1,11 @@
 import { FC, ReactNode, useState } from "react";
 import Button from "./Button";
 
-type BoxContainerProps = {
+type BoxProps = {
     children: ReactNode | ReactNode[];
 }
 
-const BoxContainer: FC<BoxContainerProps> = function ({ children }) {
+const Box: FC<BoxProps> = function ({ children }) {
 	const [isOpen, setIsOpen] = useState(true);
 
 	return(
@@ -19,4 +19,4 @@ const BoxContainer: FC<BoxContainerProps> = function ({ children }) {
 	);
 };
 
-export default BoxContainer;
+export default Box;
