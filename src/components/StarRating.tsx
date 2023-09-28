@@ -10,7 +10,6 @@ const containerStyles: CSSProperties = {
 
 const starArrayStyles: CSSProperties = {
 	display: "flex",
-	gap: "4px",
 };
 
 const textStyles: CSSProperties = {
@@ -24,12 +23,15 @@ type StarRatingProps = {
 const StarRating: FC<StarRatingProps> = function (props) {
 	const { maxRating = 5 } = props;
 
-	const [rating, setRating] = useState(0);
+	const [clickRating, setClickRating] = useState(0);
+	const [hoverRating, setHoverRating] = useState(0);
     
 	const starsArray = Array.from({ length: maxRating }, (_, i) => 
 		<Star
-			isClick={rating >= i + 1}
-			onRate={() => setRating(i + 1)} 
+			fill={hoverRating ? hoverRating >= i + 1 : clickRating >= i + 1}
+			onRate={() => setClickRating(i + 1)}
+			onHoverIn={() => setHoverRating(i + 1)}
+			onHoverOut={() => setHoverRating(0)}
 		/>
 	);
 
@@ -39,7 +41,7 @@ const StarRating: FC<StarRatingProps> = function (props) {
 				{starsArray}
 			</div>
 			<p style={textStyles}>
-				{rating}
+				{hoverRating || clickRating || ""}
 			</p>
 		</div>
 	);

@@ -8,14 +8,18 @@ const starStyles: CSSProperties = {
 };
 
 type StarProps = {
-    isClick: boolean;
+    fill: boolean;
     onRate: () => void;
+	onHoverIn: () => void;
+	onHoverOut: () => void;
 }
 
 const Star: FC<StarProps> = function (props) {
 	const {
-		isClick,
-		onRate
+		fill,
+		onRate,
+		onHoverIn,
+		onHoverOut
 	} = props;
 
 	const emptyStar = (
@@ -51,8 +55,10 @@ const Star: FC<StarProps> = function (props) {
 		<span 
 			style={starStyles}
 			onClick={onRate}
+			onMouseEnter={onHoverIn}
+			onMouseLeave={onHoverOut}
 		>
-			{isClick ? fullStar : emptyStar}	
+			{fill ? fullStar : emptyStar}	
 		</span>
 	);
 };
