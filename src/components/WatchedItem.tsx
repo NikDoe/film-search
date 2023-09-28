@@ -1,5 +1,6 @@
 import { FC } from "react";
 import { TempWatchedDataType } from "../App";
+import Rating from "./Rating";
 
 type WatchedItemProps = {
     movie: TempWatchedDataType;
@@ -19,14 +20,10 @@ const WatchedItem: FC<WatchedItemProps> = function ({ movie }) {
 			<img src={Poster} alt={`${Title} poster`} />
 			<h3>{Title}</h3>
 			<div>
-				<p>
-					<span>⭐️</span>
-					<span>{imdbRating}</span>
-				</p>
-				<p>
-					<span>🌟</span>
-					<span>{userRating}</span>
-				</p>
+				<Rating 
+					imdbRating={imdbRating}
+					userRating={userRating} 
+				/>
 				<p>
 					<span>⏳</span>
 					<span>{runtime} min</span>

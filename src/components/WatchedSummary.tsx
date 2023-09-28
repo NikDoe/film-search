@@ -1,5 +1,6 @@
 import { FC } from "react";
 import { TempWatchedDataType } from "../App";
+import Rating from "./Rating";
 
 type WatchedSummaryProps = {
     watched: TempWatchedDataType[];
@@ -21,14 +22,10 @@ const WatchedSummary: FC<WatchedSummaryProps> = function ({ watched }) {
 					<span>#️⃣</span>
 					<span>{watched.length} movies</span>
 				</p>
-				<p>
-					<span>⭐️</span>
-					<span>{avgImdbRating}</span>
-				</p>
-				<p>
-					<span>🌟</span>
-					<span>{avgUserRating}</span>
-				</p>
+				<Rating 
+					imdbRating={avgImdbRating} 
+					userRating={avgUserRating} 
+				/>
 				<p>
 					<span>⏳</span>
 					<span>{avgRuntime} min</span>
