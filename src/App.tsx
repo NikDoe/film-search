@@ -7,9 +7,8 @@ import MovieList from "./components/MovieList";
 import WatchedSummary from "./components/WatchedSummary";
 import WatchedList from "./components/WatchedList";
 import Box from "./components/Box";
-import StarRating from "./components/StarRating";
-import TestComponent from "./components/TestComponent";
 import Loader from "./components/Loader";
+import ErrorMessage from "./components/ErrorMessage";
 
 const tempMovieData = [
 	{
@@ -67,19 +66,40 @@ const App = function () {
 	const [movies, setMovies] = useState([]);
 	const [watched, setWatched] = useState(tempWatchedData);
 	const [isLoading, setIsLoading] = useState(false);
+	const [errorMessage, setErrorMessage] = useState<null | string>(null);
 
-	const query = "matrix";
+	const query = "xvzxvx";
 
 	const fetchMovies = async function () {
 		try {
 			setIsLoading(true);
 			const response = await fetch(`http://www.omdbapi.com/?apikey=${OMDB_API_KEY}&s=${query}`);
+
+			if(!response.ok) throw new Error("при загрузке фильмов произошла ошибка");
+
 			const data = await response.json();
+
+			if(data.Response === "False") throw new Error("по вашему запросу ничего не найдено");
+			
 			setMovies(data.Search);
+			setErrorMessage(null);
 		} catch (error) {
-			console.log("произошла ошибка при загрузке фильмов");
+			const errorMessage = getErrorMessage(error);
+			setErrorMessage(errorMessage);
 		} finally {
 			setIsLoading(false);
+		}
+	};
+
+	const getErrorMessage = (error: unknown): string => {
+		if (error instanceof Error) {
+			if (error instanceof TypeError) {
+				return 'Некорректный URL-адрес API';
+			} else {
+				return error.message;
+			}
+		} else {
+			return 'Произошла неизвестная ошибка';
 		}
 	};
 
@@ -95,7 +115,9 @@ const App = function () {
 			</Navbar>
 			<Main>
 				<Box>
-					{isLoading ? <Loader /> : <MovieList movies={movies} />}
+					{isLoading && <Loader />}
+					{errorMessage && <ErrorMessage message={errorMessage} />}
+					{!isLoading && !errorMessage && <MovieList movies={movies} />}
 				</Box>
 				<Box>
 					<WatchedSummary watched={watched} />
