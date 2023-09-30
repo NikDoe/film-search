@@ -67,8 +67,7 @@ const App = function () {
 	const [watched, setWatched] = useState(tempWatchedData);
 	const [isLoading, setIsLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<null | string>(null);
-
-	const query = "xvzxvx";
+	const [query, setQuery] = useState("");
 
 	const fetchMovies = async function () {
 		try {
@@ -104,13 +103,22 @@ const App = function () {
 	};
 
 	useEffect(() => {
+		if(query.length < 2) {
+			setMovies([]);
+			setErrorMessage('');
+			return;
+		}
+
 		fetchMovies();
-	}, []);
+	}, [query]);
 
 	return (
 		<>
 			<Navbar>
-				<Search />
+				<Search
+					query={query}
+					setQuery={setQuery}
+				/>
 				<SearchResults moviesLength={movies.length} />
 			</Navbar>
 			<Main>
