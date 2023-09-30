@@ -1,7 +1,7 @@
 import { FC } from "react";
 
 type ErrorMessageProps = {
-    message: string;
+    message: null | string;
 }
 
 const ErrorMessage: FC<ErrorMessageProps> = function (props) {

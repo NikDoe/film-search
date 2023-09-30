@@ -9,30 +9,7 @@ import WatchedList from "./components/WatchedList";
 import Box from "./components/Box";
 import Loader from "./components/Loader";
 import ErrorMessage from "./components/ErrorMessage";
-
-const tempMovieData = [
-	{
-		imdbID: "tt1375666",
-		Title: "Inception",
-		Year: "2010",
-		Poster:
-      "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg",
-	},
-	{
-		imdbID: "tt0133093",
-		Title: "The Matrix",
-		Year: "1999",
-		Poster:
-      "https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_SX300.jpg",
-	},
-	{
-		imdbID: "tt6751668",
-		Title: "Parasite",
-		Year: "2019",
-		Poster:
-		"https://m.media-amazon.com/images/M/MV5BYWZjMjk3ZTItODQ2ZC00NTY5LWE0ZDYtZTI3MjcwN2Q5NTVkXkEyXkFqcGdeQXVyODk4OTc3MTY@._V1_SX300.jpg",
-	},
-];
+import MovieDetails from "./components/MovieDetails";
 
 const tempWatchedData = [
 	{
@@ -59,7 +36,19 @@ const tempWatchedData = [
 
 const OMDB_API_KEY = "ee463b02";
 
-export type TempMovieDataType = typeof tempMovieData[number];
+export type TempMovieDataType = {
+	Title: string,
+	Year: string,
+	Poster: string,
+	Runtime: string,
+	imdbRating: string,
+	Plot: string,
+	Released: string,
+	Actors: string,
+	Director: string,
+	Genre: string,
+};
+
 export type TempWatchedDataType = typeof tempWatchedData[number];
 
 const App = function () {
@@ -68,6 +57,8 @@ const App = function () {
 	const [isLoading, setIsLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<null | string>(null);
 	const [query, setQuery] = useState("");
+	const [selectedId, setSelectedId] = useState<null | string>(null);
+	
 
 	const getErrorMessage = (error: unknown): string => {
 		if (error instanceof Error) {
@@ -112,6 +103,39 @@ const App = function () {
 		fetchMovies();
 	}, [query]);
 
+	const handleSelectedMovie = (id: string) => {
+		setSelectedId(prevID => prevID === id ? null: id);
+	};
+
+	const handleCloseMovieDetails = () => {
+		setSelectedId(null);
+	};
+
+	const movieListComponent = (
+		<MovieList 
+			movies={movies}
+			onSelectMovie={handleSelectedMovie}
+		/>
+	);
+
+	const errorMessageComponent = (
+		<ErrorMessage message={errorMessage} />
+	);
+
+	const watchedListComponent = (
+		<>
+			<WatchedSummary watched={watched} />
+			<WatchedList watched={watched} />
+		</>
+	);
+
+	const movieDetailsComponent = (
+		<MovieDetails 
+			selectedId={selectedId}
+			onCloseMovie={handleCloseMovieDetails}
+		/>
+	);
+
 	return (
 		<>
 			<Navbar>
@@ -124,12 +148,11 @@ const App = function () {
 			<Main>
 				<Box>
 					{isLoading && <Loader />}
-					{errorMessage && <ErrorMessage message={errorMessage} />}
-					{!isLoading && !errorMessage && <MovieList movies={movies} />}
+					{errorMessage && errorMessageComponent}
+					{!isLoading && !errorMessage && movieListComponent }
 				</Box>
 				<Box>
-					<WatchedSummary watched={watched} />
-					<WatchedList watched={watched} />
+					{selectedId ? movieDetailsComponent : watchedListComponent}
 				</Box>
 			</Main>
 		</>

@@ -3,13 +3,19 @@ import { TempMovieDataType } from "../App";
 
 type MovieItemProps = {
     movie: TempMovieDataType;
+	onSelectMovie: (id: string) => void;
 }
 
-const MovieItem: FC<MovieItemProps> = function ({ movie }) {
-	const { Title, Year } = movie;
+const MovieItem: FC<MovieItemProps> = function (props) {
+	const {
+		movie,
+		onSelectMovie
+	} = props;
+
+	const { Title, Year, imdbID } = movie;
     
 	return (
-		<li>
+		<li onClick={() => onSelectMovie(imdbID)}>
 			<img src={movie.Poster} alt={`${Title} poster`} />
 			<h3>{Title}</h3>
 			<div>
