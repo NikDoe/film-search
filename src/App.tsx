@@ -69,31 +69,10 @@ const App = function () {
 	const [errorMessage, setErrorMessage] = useState<null | string>(null);
 	const [query, setQuery] = useState("");
 
-	const fetchMovies = async function () {
-		try {
-			setIsLoading(true);
-			const response = await fetch(`http://www.omdbapi.com/?apikey=${OMDB_API_KEY}&s=${query}`);
-
-			if(!response.ok) throw new Error("при загрузке фильмов произошла ошибка");
-
-			const data = await response.json();
-
-			if(data.Response === "False") throw new Error("по вашему запросу ничего не найдено");
-			
-			setMovies(data.Search);
-			setErrorMessage(null);
-		} catch (error) {
-			const errorMessage = getErrorMessage(error);
-			setErrorMessage(errorMessage);
-		} finally {
-			setIsLoading(false);
-		}
-	};
-
 	const getErrorMessage = (error: unknown): string => {
 		if (error instanceof Error) {
 			if (error instanceof TypeError) {
-				return 'Некорректный URL-адрес API';
+				return 'при загрузке фильмов произошла ошибка';
 			} else {
 				return error.message;
 			}
@@ -108,6 +87,27 @@ const App = function () {
 			setErrorMessage('');
 			return;
 		}
+
+		const fetchMovies = async function () {
+			try {
+				setIsLoading(true);
+				setErrorMessage(null);
+	
+				const response = await fetch(`http://www.omdbapi.com/?apikey=${OMDB_API_KEY}&s=${query}`);
+	
+				const data = await response.json();
+	
+				if(data.Response === "False") throw new Error("по вашему запросу ничего не найдено");
+				
+				setMovies(data.Search);
+				setErrorMessage(null);
+			} catch (error) {
+				const errorMessage = getErrorMessage(error);
+				setErrorMessage(errorMessage);
+			} finally {
+				setIsLoading(false);
+			}
+		};
 
 		fetchMovies();
 	}, [query]);
