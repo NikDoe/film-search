@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
 import Main from "./components/Main";
 import Search from "./components/Search";
@@ -57,12 +57,30 @@ const tempWatchedData = [
 	},
 ];
 
+const OMDB_API_KEY = "ee463b02";
+
 export type TempMovieDataType = typeof tempMovieData[number];
 export type TempWatchedDataType = typeof tempWatchedData[number];
 
 const App = function () {
-	const [movies, setMovies] = useState(tempMovieData);
+	const [movies, setMovies] = useState([]);
 	const [watched, setWatched] = useState(tempWatchedData);
+
+	const query = "lord";
+
+	const fetchMovies = async function () {
+		try {
+			const response = await fetch(`http://www.omdbapi.com/?apikey=${OMDB_API_KEY}&s=${query}`);
+			const data = await response.json();
+			setMovies(data.Search);
+		} catch (error) {
+			console.log("произошла ошибка при загрузке фильмов");
+		}
+	};
+
+	useEffect(() => {
+		fetchMovies();
+	}, []);
 
 	return (
 		<>
@@ -79,7 +97,6 @@ const App = function () {
 					<WatchedList watched={watched} />
 				</Box>
 			</Main>
-			<TestComponent />
 		</>
 	);
 };
