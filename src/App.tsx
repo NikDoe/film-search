@@ -9,6 +9,7 @@ import WatchedList from "./components/WatchedList";
 import Box from "./components/Box";
 import StarRating from "./components/StarRating";
 import TestComponent from "./components/TestComponent";
+import Loader from "./components/Loader";
 
 const tempMovieData = [
 	{
@@ -65,16 +66,20 @@ export type TempWatchedDataType = typeof tempWatchedData[number];
 const App = function () {
 	const [movies, setMovies] = useState([]);
 	const [watched, setWatched] = useState(tempWatchedData);
+	const [isLoading, setIsLoading] = useState(false);
 
-	const query = "lord";
+	const query = "matrix";
 
 	const fetchMovies = async function () {
 		try {
+			setIsLoading(true);
 			const response = await fetch(`http://www.omdbapi.com/?apikey=${OMDB_API_KEY}&s=${query}`);
 			const data = await response.json();
 			setMovies(data.Search);
 		} catch (error) {
 			console.log("произошла ошибка при загрузке фильмов");
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -90,7 +95,7 @@ const App = function () {
 			</Navbar>
 			<Main>
 				<Box>
-					<MovieList movies={movies} />
+					{isLoading ? <Loader /> : <MovieList movies={movies} />}
 				</Box>
 				<Box>
 					<WatchedSummary watched={watched} />
