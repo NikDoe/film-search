@@ -52,8 +52,8 @@ export type TempMovieDataType = {
 
 export type TempWatchedDataType = {
     imdbID: string;
-    Title: string;
-    Poster: string;
+    title: string;
+    poster: string;
     runtime: number;
     imdbRating: number;
     userRating: number;

@@ -22,33 +22,34 @@ const MovieDetails: FC<MovieDetailsProps> = function (props) {
 		setWatched
 	} = props;
 
-	const [movie, setMovie] = useState<TempMovieDataType>();
+	const [movie, setMovie] = useState<TempMovieDataType | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<null | string>(null);
-	const [rating, setRating] = useState<number>(0);
+	const [userRating, setUserRating] = useState<number>(0);
 
 	const {
-		Title: title,
-		Poster: poster,
-		Runtime: runtime,
-		imdbRating,
-		Plot: plot,
-		Released: released,
-		Actors: actors,
-		Director: director,
-		Genre: genre,
-	} = movie ?? {};
+		imdbID = "",
+		Title: title = "",
+		Poster: poster = "",
+		Runtime: runtime = "",
+		imdbRating = "",
+		Plot: plot = "",
+		Released: released = "",
+		Actors: actors = "",
+		Director: director = "",
+		Genre: genre = "",
+	} = movie || {};
 
 	const handleAddNewWatched = () => {
 		if(!movie) return;
 
 		const newWatchedFilm: TempWatchedDataType = {
-			imdbID: movie.imdbID,
-			imdbRating: Number(movie.imdbRating),
-			Poster: movie.Poster,
-			runtime: parseInt(movie.Runtime),
-			Title: movie.Title,
-			userRating: rating,
+			imdbID,
+			imdbRating: Number(imdbRating),
+			poster,
+			runtime: parseInt(runtime),
+			title,
+			userRating,
 		};
 
 		setWatched((currState) => [...currState, newWatchedFilm]);
@@ -57,6 +58,16 @@ const MovieDetails: FC<MovieDetailsProps> = function (props) {
 
 	const isWatched = watched.map(movie => movie.imdbID).includes(selectedId);
 	const watchedUserRating = watched.find(movie => movie.imdbID === selectedId)?.userRating;
+
+	useEffect(() => {
+		if(!title) return;
+
+		document.title = `Movie | ${title}`;
+
+		return () => {
+			document.title = "search films";
+		};
+	}, [title]);
 
 	useEffect(() => {
 		async function getMovieDetails() {
@@ -100,9 +111,9 @@ const MovieDetails: FC<MovieDetailsProps> = function (props) {
 			<StarRating
 				maxRating={10}
 				size={24}
-				onSetRating={setRating}
+				onSetRating={setUserRating}
 			/>
-			{rating > 0 && buttonContent}
+			{userRating > 0 && buttonContent}
 		</>
 	);
 

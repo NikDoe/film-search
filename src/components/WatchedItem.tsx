@@ -16,17 +16,17 @@ const WatchedItem: FC<WatchedItemProps> = function (props) {
 
 	const {
 		imdbID,
-		Poster,
-		Title,
 		imdbRating,
-		userRating,
-		runtime
+		poster,
+		title,
+		runtime,
+		userRating
 	} = movie;
     
 	return (
 		<li>
-			<img src={Poster} alt={`${Title} poster`} />
-			<h3>{Title}</h3>
+			<img src={poster} alt={`${title} poster`} />
+			<h3>{title}</h3>
 			<div>
 				<Rating 
 					imdbRating={imdbRating}
