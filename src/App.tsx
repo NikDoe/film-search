@@ -11,29 +11,6 @@ import Loader from "./components/Loader";
 import ErrorMessage from "./components/ErrorMessage";
 import MovieDetails from "./components/MovieDetails";
 
-// const tempWatchedData = [
-// 	{
-// 		imdbID: "tt1375666",
-// 		Title: "Inception",
-// 		Year: "2010",
-// 		Poster:
-//       "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg",
-// 		runtime: 148,
-// 		imdbRating: 8.8,
-// 		userRating: 10,
-// 	},
-// 	{
-// 		imdbID: "tt0088763",
-// 		Title: "Back to the Future",
-// 		Year: "1985",
-// 		Poster:
-//       "https://m.media-amazon.com/images/M/MV5BZmU0M2Y1OGUtZjIxNi00ZjBkLTg1MjgtOWIyNThiZWIwYjRiXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg",
-// 		runtime: 116,
-// 		imdbRating: 8.5,
-// 		userRating: 9,
-// 	},
-// ];
-
 const OMDB_API_KEY = "ee463b02";
 
 export type TempMovieDataType = {
@@ -68,13 +45,13 @@ const App = function () {
 	const [selectedId, setSelectedId] = useState<string>("");
 	
 
-	const getErrorMessage = (error: unknown): string => {
+	const getErrorMessage = (error: unknown): string | null => {
 		if (error instanceof Error) {
-			if (error instanceof TypeError) {
-				return 'при загрузке фильмов произошла ошибка';
-			} else {
+			if(error.name !== "AbortError") {
 				return error.message;
 			}
+
+			return null;
 		} else {
 			return 'Произошла неизвестная ошибка';
 		}
@@ -87,12 +64,17 @@ const App = function () {
 			return;
 		}
 
+		const controller = new AbortController();
+
 		const fetchMovies = async function () {
 			try {
 				setIsLoading(true);
 				setErrorMessage(null);
 	
-				const response = await fetch(`http://www.omdbapi.com/?apikey=${OMDB_API_KEY}&s=${query}`);
+				const response = await fetch(
+					`http://www.omdbapi.com/?apikey=${OMDB_API_KEY}&s=${query}`,
+					{ signal: controller.signal }
+				);
 	
 				const data = await response.json();
 	
@@ -109,6 +91,10 @@ const App = function () {
 		};
 
 		fetchMovies();
+
+		return () => {
+			controller.abort();
+		};
 	}, [query]);
 
 	const handleSelectedMovie = (id: string) => {
