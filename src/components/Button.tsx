@@ -1,19 +1,24 @@
-import { FC } from "react";
+import { FC, ReactNode } from "react";
 
 type ButtonProps = {
-    isOpen: boolean;
+	children: ReactNode;
+	className: string;
     handleClick: () => void;
 }
 
 const Button: FC<ButtonProps> = function (props) {
-	const { isOpen, handleClick } = props;
+	const { 
+		children,
+		className,
+		handleClick
+	} = props;
     
 	return (
 		<button
-			className="btn-toggle"
+			className={className}
 			onClick={handleClick}
 		>
-			{isOpen ? "–" : "+"}
+			{children}
 		</button>
 	);
 };

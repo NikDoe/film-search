@@ -1,9 +1,9 @@
 import { FC } from "react";
-import { TempMovieDataType, TempWatchedDataType } from "../App";
+import { TempMovieDataType } from "../App";
 import MovieItem from "./MovieItem";
 
 type MovieListProps = {
-    movies: TempMovieDataType[] | TempWatchedDataType[];
+    movies: TempMovieDataType[];
 	onSelectMovie: (id: string) => void;
 }
 

@@ -20,7 +20,7 @@ const WatchedSummary: FC<WatchedSummaryProps> = function ({ watched }) {
 			<div>
 				<p>
 					<span>#️⃣</span>
-					<span>{watched.length} movies</span>
+					<span>{watched.length} mov</span>
 				</p>
 				<Rating 
 					imdbRating={avgImdbRating} 
@@ -28,7 +28,7 @@ const WatchedSummary: FC<WatchedSummaryProps> = function ({ watched }) {
 				/>
 				<p>
 					<span>⏳</span>
-					<span>{avgRuntime} min</span>
+					<span>{avgRuntime.toFixed(0)} min</span>
 				</p>
 			</div>
 		</div>

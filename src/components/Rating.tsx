@@ -15,11 +15,11 @@ const Rating: FC<RatingProps> = function (props) {
 		<>
 			<p>
 				<span>⭐️</span>
-				<span>{imdbRating}</span>
+				<span>{imdbRating.toFixed(1)}</span>
 			</p>
 			<p>
 				<span>🌟</span>
-				<span>{userRating}</span>
+				<span>{userRating.toFixed(1)}</span>
 			</p>
 		</>
 	);

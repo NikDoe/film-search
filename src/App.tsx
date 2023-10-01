@@ -11,32 +11,33 @@ import Loader from "./components/Loader";
 import ErrorMessage from "./components/ErrorMessage";
 import MovieDetails from "./components/MovieDetails";
 
-const tempWatchedData = [
-	{
-		imdbID: "tt1375666",
-		Title: "Inception",
-		Year: "2010",
-		Poster:
-      "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg",
-		runtime: 148,
-		imdbRating: 8.8,
-		userRating: 10,
-	},
-	{
-		imdbID: "tt0088763",
-		Title: "Back to the Future",
-		Year: "1985",
-		Poster:
-      "https://m.media-amazon.com/images/M/MV5BZmU0M2Y1OGUtZjIxNi00ZjBkLTg1MjgtOWIyNThiZWIwYjRiXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg",
-		runtime: 116,
-		imdbRating: 8.5,
-		userRating: 9,
-	},
-];
+// const tempWatchedData = [
+// 	{
+// 		imdbID: "tt1375666",
+// 		Title: "Inception",
+// 		Year: "2010",
+// 		Poster:
+//       "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg",
+// 		runtime: 148,
+// 		imdbRating: 8.8,
+// 		userRating: 10,
+// 	},
+// 	{
+// 		imdbID: "tt0088763",
+// 		Title: "Back to the Future",
+// 		Year: "1985",
+// 		Poster:
+//       "https://m.media-amazon.com/images/M/MV5BZmU0M2Y1OGUtZjIxNi00ZjBkLTg1MjgtOWIyNThiZWIwYjRiXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg",
+// 		runtime: 116,
+// 		imdbRating: 8.5,
+// 		userRating: 9,
+// 	},
+// ];
 
 const OMDB_API_KEY = "ee463b02";
 
 export type TempMovieDataType = {
+	imdbID: string,
 	Title: string,
 	Year: string,
 	Poster: string,
@@ -49,15 +50,22 @@ export type TempMovieDataType = {
 	Genre: string,
 };
 
-export type TempWatchedDataType = typeof tempWatchedData[number];
+export type TempWatchedDataType = {
+    imdbID: string;
+    Title: string;
+    Poster: string;
+    runtime: number;
+    imdbRating: number;
+    userRating: number;
+}
 
 const App = function () {
-	const [movies, setMovies] = useState([]);
-	const [watched, setWatched] = useState(tempWatchedData);
+	const [movies, setMovies] = useState<TempMovieDataType[]>([]);
+	const [watched, setWatched] = useState<TempWatchedDataType[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<null | string>(null);
 	const [query, setQuery] = useState("");
-	const [selectedId, setSelectedId] = useState<null | string>(null);
+	const [selectedId, setSelectedId] = useState<string>("");
 	
 
 	const getErrorMessage = (error: unknown): string => {
@@ -104,11 +112,15 @@ const App = function () {
 	}, [query]);
 
 	const handleSelectedMovie = (id: string) => {
-		setSelectedId(prevID => prevID === id ? null: id);
+		setSelectedId(prevID => prevID === id ? "": id);
 	};
 
 	const handleCloseMovieDetails = () => {
-		setSelectedId(null);
+		setSelectedId("");
+	};
+
+	const handleDeleteWatchedFilm = (id: string) => {
+		setWatched(watched => watched.filter(film => film.imdbID !== id));
 	};
 
 	const movieListComponent = (
@@ -125,7 +137,10 @@ const App = function () {
 	const watchedListComponent = (
 		<>
 			<WatchedSummary watched={watched} />
-			<WatchedList watched={watched} />
+			<WatchedList 
+				watched={watched}
+				onDelete={handleDeleteWatchedFilm}
+			/>
 		</>
 	);
 
@@ -133,6 +148,8 @@ const App = function () {
 		<MovieDetails 
 			selectedId={selectedId}
 			onCloseMovie={handleCloseMovieDetails}
+			watched={watched}
+			setWatched={setWatched}
 		/>
 	);
 

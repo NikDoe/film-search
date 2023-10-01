@@ -11,9 +11,11 @@ const Box: FC<BoxProps> = function ({ children }) {
 	return(
 		<div className="box">
 			<Button 
-				isOpen={isOpen}
+				className="btn-toggle"
 				handleClick={() => setIsOpen(open => !open)}
-			/>
+			>
+				{isOpen ? "–" : "+"}
+			</Button>
 			{isOpen && children}
 		</div>
 	);
