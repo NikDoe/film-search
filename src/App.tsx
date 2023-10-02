@@ -79,6 +79,8 @@ const App = function () {
 				const data = await response.json();
 	
 				if(data.Response === "False") throw new Error("по вашему запросу ничего не найдено");
+
+				handleCloseMovieDetails();
 				
 				setMovies(data.Search);
 				setErrorMessage(null);
