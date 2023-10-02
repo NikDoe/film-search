@@ -60,6 +60,20 @@ const MovieDetails: FC<MovieDetailsProps> = function (props) {
 	const watchedUserRating = watched.find(movie => movie.imdbID === selectedId)?.userRating;
 
 	useEffect(() => {
+		const closeOnPressEscape = (event: KeyboardEvent) => {
+			if(event.code === "Escape") {
+				onCloseMovie();
+			}
+		};
+
+		window.addEventListener("keydown", closeOnPressEscape);
+
+		return () => {
+			window.removeEventListener("keydown", closeOnPressEscape);
+		};
+	}, [onCloseMovie]);
+
+	useEffect(() => {
 		if(!title) return;
 
 		document.title = `Movie | ${title}`;
