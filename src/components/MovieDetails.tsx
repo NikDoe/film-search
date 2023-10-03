@@ -84,23 +84,30 @@ const MovieDetails: FC<MovieDetailsProps> = function (props) {
 	}, [title]);
 
 	useEffect(() => {
+		const controller = new AbortController();
+
 		async function getMovieDetails() {
 			try {
 				setIsLoading(true);
 				setErrorMessage(null);
-				const res = await fetch(`http://www.omdbapi.com/?apikey=${OMDB_API_KEY}&i=${selectedId}`);
-				const data = await res.json();
+				const res = await fetch(
+					`http://www.omdbapi.com/?apikey=${OMDB_API_KEY}&i=${selectedId}`,
+					{ signal : controller.signal }
+				);
+
+				const data = await res.json();				
 				
 				if(data.Response === "False") throw new Error("Фильм не найден");
 				
 				setMovie(data);
 			} catch (error) {
 				if (error instanceof Error) {
-					if (error instanceof TypeError) {
-						setErrorMessage('при загрузке фильма произошла ошибка');
-					} else {
+					if(error.name !== "AbortError") {
 						setErrorMessage(error.message);
 					}
+
+					setMovie(null);
+					setErrorMessage(null);
 				} else {
 					setErrorMessage('Произошла неизвестная ошибка');
 				}
@@ -109,6 +116,10 @@ const MovieDetails: FC<MovieDetailsProps> = function (props) {
 			}
 		}
 		getMovieDetails();
+
+		return () => {
+			controller.abort();
+		};
 	},[selectedId]);
 
 	const buttonContent = (
@@ -168,6 +179,7 @@ const MovieDetails: FC<MovieDetailsProps> = function (props) {
 	return (
 		<div className="details">
 			{isLoading && <Loader />}
+			{!movie && !errorMessage && <Loader />}
 			{errorMessage && <ErrorMessage message={errorMessage} />}
 			{movie && !isLoading && !errorMessage && movieDetailsCotent}
 		</div>
