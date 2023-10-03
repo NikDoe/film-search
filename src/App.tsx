@@ -38,12 +38,15 @@ export type TempWatchedDataType = {
 
 const App = function () {
 	const [movies, setMovies] = useState<TempMovieDataType[]>([]);
-	const [watched, setWatched] = useState<TempWatchedDataType[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<null | string>(null);
 	const [query, setQuery] = useState("");
 	const [selectedId, setSelectedId] = useState<string>("");
-	
+
+	const [watched, setWatched] = useState<TempWatchedDataType[]>(() => {
+		const storedFilms = localStorage.getItem('watched');
+		return storedFilms ? JSON.parse(storedFilms) : []; 
+	});
 
 	const getErrorMessage = (error: unknown): string | null => {
 		if (error instanceof Error) {
@@ -56,6 +59,10 @@ const App = function () {
 			return 'Произошла неизвестная ошибка';
 		}
 	};
+
+	useEffect(() => {
+		localStorage.setItem('watched', JSON.stringify(watched));
+	}, [watched]);
 
 	useEffect(() => {
 		if(query.length < 2) {
