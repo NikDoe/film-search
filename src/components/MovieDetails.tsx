@@ -4,6 +4,7 @@ import StarRating from "./StarRating";
 import ErrorMessage from "./ErrorMessage";
 import { TempMovieDataType, TempWatchedDataType } from "../App";
 import Button from "./Button";
+import { useKeyPress } from "../hooks/useKeyPress";
 
 const OMDB_API_KEY = "ee463b02";
 
@@ -26,6 +27,8 @@ const MovieDetails: FC<MovieDetailsProps> = function (props) {
 	const [isLoading, setIsLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<null | string>(null);
 	const [userRating, setUserRating] = useState<number>(0);
+
+	useKeyPress('Escape', onCloseMovie);
 
 	const {
 		imdbID = "",
@@ -58,20 +61,6 @@ const MovieDetails: FC<MovieDetailsProps> = function (props) {
 
 	const isWatched = watched.map(movie => movie.imdbID).includes(selectedId);
 	const watchedUserRating = watched.find(movie => movie.imdbID === selectedId)?.userRating;
-
-	useEffect(() => {
-		const closeOnPressEscape = (event: KeyboardEvent) => {
-			if(event.code === "Escape") {
-				onCloseMovie();
-			}
-		};
-
-		window.addEventListener("keydown", closeOnPressEscape);
-
-		return () => {
-			window.removeEventListener("keydown", closeOnPressEscape);
-		};
-	}, [onCloseMovie]);
 
 	useEffect(() => {
 		if(!title) return;

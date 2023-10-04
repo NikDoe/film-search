@@ -1,4 +1,5 @@
-import { FC, useEffect, useRef } from "react";
+import { FC, useRef } from "react";
+import { useKeyPress } from "../hooks/useKeyPress";
 
 type SearchProps = {
 	query: string;
@@ -13,24 +14,12 @@ const Search: FC<SearchProps> = function (props) {
 
 	const searchRef = useRef<null | HTMLInputElement>(null);
 
-	useEffect(() => {
-		const focusOnPressEnter = (event: KeyboardEvent) => {
-			if(
-				event.code === "Enter" &&
-				searchRef.current &&
-				!searchRef.current.matches(":focus")
-			) {
-				setQuery("");
-				searchRef.current.focus();
-			}
-		};
-
-		window.addEventListener('keydown', focusOnPressEnter);
-
-		return () => {
-			window.removeEventListener('keydown', focusOnPressEnter);
-		};
-	}, [setQuery]);
+	useKeyPress('Enter', () => {
+		if(searchRef.current && !searchRef.current.matches(":focus")) {
+			setQuery("");
+			searchRef.current.focus();
+		}
+	});
 
 	return (
 		<input

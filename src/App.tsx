@@ -10,6 +10,7 @@ import Box from "./components/Box";
 import Loader from "./components/Loader";
 import ErrorMessage from "./components/ErrorMessage";
 import MovieDetails from "./components/MovieDetails";
+import { useLocalStorageState } from "./hooks/useLocalStorageState";
 
 const OMDB_API_KEY = "ee463b02";
 
@@ -43,10 +44,7 @@ const App = function () {
 	const [query, setQuery] = useState("");
 	const [selectedId, setSelectedId] = useState<string>("");
 
-	const [watched, setWatched] = useState<TempWatchedDataType[]>(() => {
-		const storedFilms = localStorage.getItem('watched');
-		return storedFilms ? JSON.parse(storedFilms) : []; 
-	});
+	const [watched, setWatched] = useLocalStorageState<TempWatchedDataType[]>('watched', []);
 
 	const getErrorMessage = (error: unknown): string | null => {
 		if (error instanceof Error) {
@@ -60,9 +58,7 @@ const App = function () {
 		}
 	};
 
-	useEffect(() => {
-		localStorage.setItem('watched', JSON.stringify(watched));
-	}, [watched]);
+	
 
 	useEffect(() => {
 		if(query.length < 2) {
