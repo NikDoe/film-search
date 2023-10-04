@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect, useRef } from "react";
 
 type SearchProps = {
 	query: string;
@@ -11,6 +11,27 @@ const Search: FC<SearchProps> = function (props) {
 		setQuery
 	} = props;
 
+	const searchRef = useRef<null | HTMLInputElement>(null);
+
+	useEffect(() => {
+		const focusOnPressEnter = (event: KeyboardEvent) => {
+			if(
+				event.code === "Enter" &&
+				searchRef.current &&
+				!searchRef.current.matches(":focus")
+			) {
+				setQuery("");
+				searchRef.current.focus();
+			}
+		};
+
+		window.addEventListener('keydown', focusOnPressEnter);
+
+		return () => {
+			window.removeEventListener('keydown', focusOnPressEnter);
+		};
+	}, [setQuery]);
+
 	return (
 		<input
 			className="search"
@@ -18,6 +39,7 @@ const Search: FC<SearchProps> = function (props) {
 			placeholder="Search movies..."
 			value={query}
 			onChange={(e) => setQuery(e.target.value)}
+			ref={searchRef}
 		/>
 	);
 };
