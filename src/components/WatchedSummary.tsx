@@ -1,15 +1,14 @@
 import { FC } from "react";
-import { TempWatchedDataType } from "../App";
-import Rating from "./Rating";
+import { useWatchedMovies } from "../contexts/WatchedContex";
 
-type WatchedSummaryProps = {
-    watched: TempWatchedDataType[];
-}
+import Rating from "./Rating";
 
 const average = (arr: number[]) =>
 	arr.reduce((acc, cur, _, arr) => acc + cur / arr.length, 0);
 
-const WatchedSummary: FC<WatchedSummaryProps> = function ({ watched }) {
+const WatchedSummary: FC = function () {
+	const { watched } = useWatchedMovies();
+
 	const avgImdbRating = average(watched.map((movie) => movie.imdbRating));
 	const avgUserRating = average(watched.map((movie) => movie.userRating));
 	const avgRuntime = average(watched.map((movie) => movie.runtime));

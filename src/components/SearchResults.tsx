@@ -1,13 +1,12 @@
 import { FC } from "react";
+import { useMovies } from "../contexts/MovieContext";
 
-type SearchResultsProps = {
-    moviesLength: number;
-}
+const SearchResults: FC = function () {
+	const { movies } = useMovies();
 
-const SearchResults: FC<SearchResultsProps> = function ({ moviesLength }) {
 	return(
 		<p className="num-results">
-          Found <strong>{moviesLength}</strong> results
+          Found <strong>{movies.length}</strong> results
 		</p>
 	);
 };

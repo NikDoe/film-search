@@ -1,13 +1,13 @@
-import { FC, ReactNode } from "react";
+import { FC } from "react";
 
-type MainProps = {
-	children: ReactNode;
-}
+import MovieslistComponent from "./MovieslistComponent";
+import WatchedListComponent from "./WatchedListComponent";
 
-const Main: FC<MainProps> = function ({ children }) {
+const Main: FC = function () {		
 	return (
 		<main className="main">
-			{children}
+			<MovieslistComponent />
+			<WatchedListComponent />
 		</main>
 	);
 };

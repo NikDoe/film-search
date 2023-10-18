@@ -1,17 +1,10 @@
 import { FC } from "react";
-import { TempMovieDataType } from "../App";
+import { useMovies } from "../contexts/MovieContext";
+
 import MovieItem from "./MovieItem";
 
-type MovieListProps = {
-    movies: TempMovieDataType[];
-	onSelectMovie: (id: string) => void;
-}
-
-const MovieList: FC<MovieListProps> = function (props) {
-	const {
-		movies,
-		onSelectMovie
-	} = props;
+const MovieList: FC = function () {
+	const { movies } = useMovies();
 
 	return (
 		<ul className="list list-movies">
@@ -19,7 +12,6 @@ const MovieList: FC<MovieListProps> = function (props) {
 				<MovieItem 
 					key={movie.imdbID}
 					movie={movie}
-					onSelectMovie={onSelectMovie}
 				/>
 			))}
 		</ul>

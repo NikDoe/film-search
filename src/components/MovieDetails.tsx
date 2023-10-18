@@ -1,34 +1,29 @@
-import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
+import { useKeyPress } from "../hooks/useKeyPress";
+import { MoviesActionType, TempMovieDataType, TempWatchedDataType } from "../types";
+import { useMovies } from "../contexts/MovieContext";
+import { useWatchedMovies } from "../contexts/WatchedContex";
+
 import Loader from "./Loader";
 import StarRating from "./StarRating";
 import ErrorMessage from "./ErrorMessage";
-import { TempMovieDataType, TempWatchedDataType } from "../App";
 import Button from "./Button";
-import { useKeyPress } from "../hooks/useKeyPress";
 
 const OMDB_API_KEY = "ee463b02";
 
-type MovieDetailsProps = {
-	selectedId: string;
-	onCloseMovie: () => void;
-	watched: TempWatchedDataType[];
-	setWatched: Dispatch<SetStateAction<TempWatchedDataType[]>>;
-}
-
-const MovieDetails: FC<MovieDetailsProps> = function (props) {
-	const {
-		selectedId,
-		onCloseMovie,
-		watched,
-		setWatched
-	} = props;
-
+const MovieDetails: FC = function () {
 	const [movie, setMovie] = useState<TempMovieDataType | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<null | string>(null);
 	const [userRating, setUserRating] = useState<number>(0);
+	const { dispatch, selectedMovieId } = useMovies();
+	const { watched, setWatched } = useWatchedMovies();
 
-	useKeyPress('Escape', onCloseMovie);
+	function handleCloseMovie () {
+		dispatch({ type: MoviesActionType.HANDLE_SELECTED_MOVIE, payload: null });
+	}
+
+	useKeyPress('Escape', handleCloseMovie);
 
 	const {
 		imdbID = "",
@@ -56,11 +51,11 @@ const MovieDetails: FC<MovieDetailsProps> = function (props) {
 		};
 
 		setWatched((currState) => [...currState, newWatchedFilm]);
-		onCloseMovie();
+		handleCloseMovie();
 	};
 
-	const isWatched = watched.map(movie => movie.imdbID).includes(selectedId);
-	const watchedUserRating = watched.find(movie => movie.imdbID === selectedId)?.userRating;
+	const isWatched = watched.map(movie => movie.imdbID).includes(selectedMovieId ?? '');
+	const watchedUserRating = watched.find(movie => movie.imdbID === selectedMovieId)?.userRating;
 
 	useEffect(() => {
 		if(!title) return;
@@ -80,7 +75,7 @@ const MovieDetails: FC<MovieDetailsProps> = function (props) {
 				setIsLoading(true);
 				setErrorMessage(null);
 				const res = await fetch(
-					`http://www.omdbapi.com/?apikey=${OMDB_API_KEY}&i=${selectedId}`,
+					`http://www.omdbapi.com/?apikey=${OMDB_API_KEY}&i=${selectedMovieId}`,
 					{ signal : controller.signal }
 				);
 
@@ -109,7 +104,7 @@ const MovieDetails: FC<MovieDetailsProps> = function (props) {
 		return () => {
 			controller.abort();
 		};
-	},[selectedId]);
+	},[selectedMovieId]);
 
 	const buttonContent = (
 		<Button 
@@ -136,7 +131,7 @@ const MovieDetails: FC<MovieDetailsProps> = function (props) {
 	const movieDetailsCotent = (
 		<>
 			<header>
-				<button className="btn-back" onClick={onCloseMovie}>
+				<button className="btn-back" onClick={handleCloseMovie}>
 					&larr;
 				</button>
 				<img src={poster} alt={`Poster of ${movie} movie`} />

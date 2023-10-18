@@ -1,21 +1,25 @@
 import { FC } from "react";
-import { TempMovieDataType } from "../App";
+import { MoviesActionType, TempMovieDataType } from "../types";
+import { useMovies } from "../contexts/MovieContext";
 
 type MovieItemProps = {
     movie: TempMovieDataType;
-	onSelectMovie: (id: string) => void;
 }
 
-const MovieItem: FC<MovieItemProps> = function (props) {
-	const {
-		movie,
-		onSelectMovie
-	} = props;
+const MovieItem: FC<MovieItemProps> = function ({ movie }) {
+	const { dispatch } = useMovies();
 
 	const { Title, Year, imdbID } = movie;
+
+	function handleClick () {
+		dispatch({
+			type: MoviesActionType.HANDLE_SELECTED_MOVIE, 
+			payload: imdbID,
+		});
+	}
     
 	return (
-		<li onClick={() => onSelectMovie(imdbID)}>
+		<li onClick={handleClick}>
 			<img src={movie.Poster} alt={`${Title} poster`} />
 			<h3>{Title}</h3>
 			<div>

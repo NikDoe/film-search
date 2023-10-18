@@ -1,19 +1,17 @@
 import { FC } from "react";
-import { TempWatchedDataType } from "../App";
+import { TempWatchedDataType } from "../types";
+import { useWatchedMovies } from "../contexts/WatchedContex";
+
 import Rating from "./Rating";
 import Button from "./Button";
 
 type WatchedItemProps = {
     movie: TempWatchedDataType;
-	onDelete: (id: string) => void;
 }
 
-const WatchedItem: FC<WatchedItemProps> = function (props) {
-	const {
-		movie,
-		onDelete
-	} = props;
-
+const WatchedItem: FC<WatchedItemProps> = function ({ movie }) {
+	const { setWatched } = useWatchedMovies();
+	
 	const {
 		imdbID,
 		imdbRating,
@@ -22,6 +20,10 @@ const WatchedItem: FC<WatchedItemProps> = function (props) {
 		runtime,
 		userRating
 	} = movie;
+
+	const handleDelete = (id: string) => {
+		setWatched(watched => watched.filter(film => film.imdbID !== id));
+	};
     
 	return (
 		<li>
@@ -38,7 +40,7 @@ const WatchedItem: FC<WatchedItemProps> = function (props) {
 				</p>
 				<Button 
 					className="btn-delete"
-					handleClick={() => onDelete(imdbID)}
+					handleClick={() => handleDelete(imdbID)}
 				>
 				X
 				</Button>

@@ -1,33 +1,30 @@
 import { FC, useRef } from "react";
 import { useKeyPress } from "../hooks/useKeyPress";
+import { useMovies } from "../contexts/MovieContext";
+import { MoviesActionType } from "../types";
 
-type SearchProps = {
-	query: string;
-	setQuery: (query: string) => void;
-}
-
-const Search: FC<SearchProps> = function (props) {
-	const {
-		query,
-		setQuery
-	} = props;
-
+const Search: FC = function () {
 	const searchRef = useRef<null | HTMLInputElement>(null);
+	const { searchString, dispatch } = useMovies();
 
 	useKeyPress('Enter', () => {
 		if(searchRef.current && !searchRef.current.matches(":focus")) {
-			setQuery("");
+			dispatch({ type: MoviesActionType.SEARCH_MOVIE, payload: '' });
 			searchRef.current.focus();
 		}
 	});
+
+	function hanldeChange (value: string) {
+		dispatch({ type: MoviesActionType.SEARCH_MOVIE, payload: value });
+	}
 
 	return (
 		<input
 			className="search"
 			type="text"
 			placeholder="Search movies..."
-			value={query}
-			onChange={(e) => setQuery(e.target.value)}
+			value={searchString}
+			onChange={(e) => hanldeChange(e.target.value)}
 			ref={searchRef}
 		/>
 	);
